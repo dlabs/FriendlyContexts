@@ -28,6 +28,14 @@ class EntityResolver
 
         $namespaces = is_array($namespaces) ? $namespaces : [ $namespaces ];
 
+        // Override namespaces in case of a namespaced entity name
+        $entityNameParts = explode('\\', $name);
+        if (count($entityNameParts) > 1) {
+            $namespace  = join("\\", array_slice($entityNameParts, 0, count($entityNameParts)-1));
+            $namespaces = [$namespace];
+            $name       = end($entityNameParts);
+        }
+
         foreach ($namespaces as $namespace) {
             $results = $this->getClassesFromName($entityManager, $name, $namespace, $results);
         }
